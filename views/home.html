@@ -1,9 +1,25 @@
 <html>
-	<head><title>Home</title></head>
+	<head>
+		<title>Home</title>
+		<!-- Latest compiled and minified CSS -->
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+		<!-- Optional theme -->
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
+		<!-- Latest compiled and minified JavaScript -->
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+		<!-- Lates minfied jQuery -->
+		<script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
+		</head>
 	<body>
-		<div>
-			<h1>Hello <%= email %></h1>
-		</div>
+			<nav class="navbar navbar-default">
+	  <div class="container-fluid">
+	    <div class="navbar-header">
+	      <a class="navbar-brand" href="">
+	        Redis Session demo
+	      </a>
+	    </div>
+			<p class="navbar-text navbar-right">Signed in as <a href="#" class="navbar-link"><%= name %></a></p>
+	  </div>
+	</nav>
 	</body>
 </html>
-

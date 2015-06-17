@@ -12,7 +12,7 @@ var app				=	express();
 var router			=	express.Router();
 
 var pool	=	mysql.createPool({
-    connectionLimit : 100, 
+    connectionLimit : 100,
     host     : 'localhost',
     user     : 'root',
     password : 'toor',
@@ -49,26 +49,26 @@ function handle_database(req,type,callback) {
 		function(connection,callback) {
 			var SQLquery;
 			switch(type) {
-				case "login" : 
+				case "login" :
 				SQLquery = "SELECT * from user_login WHERE user_email='"+req.body.user_email+"'";
 				break;
-				case "register" : 
+				case "register" :
 				SQLquery = "INSERT into user_login(user_email,user_password,user_name) VALUES ("+req.body.user_email+","+req.body.user_pass+","+req.body.user_name+")";
 				break;
-				case "addStatus" : 
+				case "addStatus" :
 				SQLquery = "INSERT into user_status(user_id,user_status) VALUES ("+req.session.key["user_id"]+","+req.body.status+")";
 				break;
-				case "getStatus" : 
+				case "getStatus" :
 				SQLquery = "SELECT * FROM user_status WHERE user_id="+req.session.key["user_id"];
 				break;
-				default : 
+				default :
 				break;
 			}
 			callback(null,connection,SQLquery);
 		},
 		function(connection,SQLquery,callback) {
 			connection.query(SQLquery,function(err,rows){
-				if(!err) {					
+				if(!err) {
 					if(type === "login" || type === "getStatus") {
 						callback(rows.length === 0 ? false : rows[0]);
 					} else {
@@ -107,7 +107,7 @@ router.post('/login',function(req,res){
 
 router.get('/home',function(req,res){
 	if(req.session.key) {
-		res.render("home.html",{ email : req.session.key["user_email"]});
+		res.render("home.html",{ email : req.session.key["user_name"]});
 	} else {
 		res.render("index.html");
 	}
@@ -115,7 +115,9 @@ router.get('/home',function(req,res){
 
 router.get('/logout',function(req,res){
 	if(req.session.key) {
-		client.del(req.session.key);
+    req.session.destroy(function(){
+      res.redirect('/');
+    });
 	} else {
 		res.redirect('/');
 	}
