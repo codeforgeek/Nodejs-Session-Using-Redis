@@ -1,15 +1,15 @@
-var express       =	require("express");
-var redis         =	require("redis");
-var mysql         =	require("mysql");
-var session       =	require('express-session');
-var redisStore    =	require('connect-redis')(session);
-var bodyParser    =	require('body-parser');
-var cookieParser  =	require('cookie-parser');
-var path          =	require("path");
-var async         =	require("async");
-var client        = redis.createClient();
-var app           =	express();
-var router        =	express.Router();
+var express         =	  require("express");
+var redis           =	  require("redis");
+var mysql           =	  require("mysql");
+var session         =	  require('express-session');
+var redisStore      =	  require('connect-redis')(session);
+var bodyParser      =	  require('body-parser');
+var cookieParser    =	  require('cookie-parser');
+var path            =	  require("path");
+var async           =	  require("async");
+var client          =   redis.createClient();
+var app             =	  express();
+var router          =	  express.Router();
 
 var pool	=	mysql.createPool({
     connectionLimit : 100,
@@ -52,8 +52,11 @@ function handle_database(req,type,callback) {
 				case "login" :
 				SQLquery = "SELECT * from user_login WHERE user_email='"+req.body.user_email+"' AND `user_password`='"+req.body.user_password+"'";
 				break;
+        case "checkEmail" :
+        SQLquery = "SELECT * from user_login WHERE user_email='"+req.body.user_email+"'";
+        break;
 				case "register" :
-				SQLquery = "INSERT into user_login(user_email,user_password,user_name) VALUES ("+req.body.user_email+","+req.body.user_pass+","+req.body.user_name+")";
+				SQLquery = "INSERT into user_login(user_email,user_password,user_name) VALUES ('"+req.body.user_email+"','"+req.body.user_password+"','"+req.body.user_name+"')";
 				break;
 				case "addStatus" :
 				SQLquery = "INSERT into user_status(user_id,user_status) VALUES ("+req.session.key["user_id"]+",'"+req.body.status+"')";
@@ -74,7 +77,9 @@ function handle_database(req,type,callback) {
 						callback(rows.length === 0 ? false : rows[0]);
 					} else if(type === "getStatus") {
             callback(rows.length === 0 ? false : rows);
-          } else {
+          } else if(type === "checkEmail") {
+            callback(rows.length === 0 ? false : true);
+          }else {
 						callback(false);
 					}
 				} else {
@@ -133,7 +138,6 @@ router.get("/fetchStatus",function(req,res){
 });
 
 router.post("/addStatus",function(req,res){
-
     if(req.session.key) {
       handle_database(req,"addStatus",function(response){
         if(!response) {
@@ -148,17 +152,19 @@ router.post("/addStatus",function(req,res){
 });
 
 router.post("/register",function(req,res){
-  if(req.session.key) {
-    handle_database(req,"register",function(response){
+    handle_database(req,"checkEmail",function(response){
       if(response === null) {
-        res.json({"error" : false, "message" : "Error while adding Status"});
+        res.json({"error" : true, "message" : "This email is already present"});
       } else {
-        res.json({"error" : false, "message" : "Registered successfully."});
+        handle_database(req,"register",function(response){
+          if(response === null) {
+            res.json({"error" : true , "message" : "Error while adding user."});
+          } else {
+            res.json({"error" : false, "message" : "Registered successfully."});
+          }
+        });
       }
     });
-  } else {
-    res.json({"error" : true, "message" : "Please login first."});
-  }
 });
 
 router.get('/logout',function(req,res){

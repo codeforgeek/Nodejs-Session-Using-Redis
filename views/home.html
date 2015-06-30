@@ -1,12 +1,22 @@
 <html>
 	<head>
 		<title>Home</title>
+
+		<!-- Latest compiled and minified CSS -->
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+
+		<!-- Optional theme -->
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
+
 		<script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
+
+		<!-- Latest compiled and minified JavaScript -->
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 		<script type="text/javascript">
 			$(document).ready(function(){
 				$.get("http://localhost:3000/fetchStatus",function(res){
 					$.each(res.message,function(index,value) {
-						$("#showStatus").append('<li>'+value.user_status+'</li>');
+						$("#showStatus").append('You have posted <br> <p>'+value.user_status+'</p><hr>');
 					});
 				});
 				$("#addNewStatus").click(function(e){
@@ -23,11 +33,20 @@
 		</script>
 		</head>
 	<body>
-	<div>
-		<p>Hi, you are login as <%= email %> (<a href="/logout/">Logout</a>)</p>
-		<textarea rows="10" cols="5" id="statusbox"></textarea><br>
-		<input type="submit" id="addNewStatus" value="Post"><br>
-		<div id="showStatus">
+		<nav class="navbar navbar-default navbar-fixed-top">
+			<div class="navbar-header">
+		<a class="navbar-brand" href="#">
+			<p>Redis session demo</p>
+		</a>
+	</div>
+	<div class="container">
+		<p class="navbar-text navbar-right">Hi you are login as <b><%= email %></b> (<a href="/logout/">Logout</a>)</p>
+		</div>
+</nav>
+	<div style="margin-top:100px;margin-left:50px;width:400px">
+		<textarea rows="10" cols="5" id="statusbox" class="form-control"></textarea><br>
+		<input type="submit" id="addNewStatus" value="Post" class="btn btn-primary"><br>
+		<div id="showStatus" style="border : 2px grey; border-radius : 4px;">
 		</div>
 	</div>
 	</body>
