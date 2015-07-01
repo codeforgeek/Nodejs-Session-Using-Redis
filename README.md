@@ -12,16 +12,16 @@ Run ```npm start``` in terminal and visit app at localhost:3000.
 ## Screenshots.
 
 ### Starting the app
-(./images/1.png)
+![app console](./images/1.png)
 
 ### Login
-(./images/2.png)
+![login screen](./images/2.png)
 
 ### After login screen
-(./images/3.png)
+![after login screen](./images/3.png)
 
 ### Redis data
-(./images/4.png)
+![Redis data](./images/4.png)
 
 ### After logging out
-(./images/5.png)
+![logout from redis](./images/5.png)
