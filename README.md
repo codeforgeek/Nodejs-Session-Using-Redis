@@ -1,6 +1,5 @@
 # Nodejs-Session-Using-Redis
-Project to maintain web application session using external storage i.e Redis.
-
+Handling Session in app is not good practice for production environment. In case of concurrent and distributed environment we need more reliable and stable source of Session storage. Redis is one of the fastest and widely used key storage database software. This project will demonstrate how to incorporate Redis into ExpressJS application to handle Session.
 ## How to run.
 
 Download Redis and start it on default port.
