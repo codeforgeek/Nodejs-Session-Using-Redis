@@ -1,3 +1,6 @@
+/**
+  Loading all dependcies.
+**/
 var express         =	  require("express");
 var redis           =	  require("redis");
 var mysql           =	  require("mysql");
@@ -11,6 +14,9 @@ var client          =   redis.createClient();
 var app             =	  express();
 var router          =	  express.Router();
 
+// Always use MySQL pooling.
+// Helpful for multiple connections.
+
 var pool	=	mysql.createPool({
     connectionLimit : 100,
     host     : 'localhost',
@@ -23,23 +29,32 @@ var pool	=	mysql.createPool({
 app.set('views', path.join(__dirname,'../','views'));
 app.engine('html', require('ejs').renderFile);
 
-app.use(session(
-	{
+// IMPORTANT
+// Here we tell Express to use Redis as session store.
+// We pass Redis credentials and port information.
+// And express does the rest !
+
+app.use(session({
 		secret: 'ssshhhhh',
 		store: new redisStore({ host: 'localhost', port: 6379, client: client,ttl :  260}),
 		saveUninitialized: false,
 		resave: false
-	}
-));
+}));
 app.use(cookieParser("secretSign#143_!223"));
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
+
+// This is an important function.
+// This function does the database handling task.
+// We also use async here for control flow.
 
 function handle_database(req,type,callback) {
 	async.waterfall([
 		function(callback) {
 			pool.getConnection(function(err,connection){
 				if(err) {
+          // if there is error, stop right away.
+          // This will stop the async code execution and goes to last function.
 					callback(true);
 				} else {
 					callback(null,connection);
@@ -83,11 +98,14 @@ function handle_database(req,type,callback) {
 						callback(false);
 					}
 				} else {
+          // if there is error, stop right away.
+          // This will stop the async code execution and goes to last function.
           callback(true);
         }
 			});
 		}
 	],function(result){
+    // This function gets call after every async task finished.
 		if(typeof(result) === "boolean" && result === true) {
 			callback(null);
 		} else {
@@ -95,6 +113,10 @@ function handle_database(req,type,callback) {
 		}
 	});
 }
+
+/**
+    --- Router Code begins here.
+**/
 
 router.get('/',function(req,res){
 	res.render('index.html');

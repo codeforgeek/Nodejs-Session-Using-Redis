@@ -14,5 +14,10 @@
     "express-session": "^1.11.3",
     "mysql": "^2.7.0",
     "redis": "^0.12.1"
+  },
+  "devDependencies": {
+    "mocha": "^2.2.5",
+    "should": "^7.0.1",
+    "supertest": "^1.0.1"
   }
 }
